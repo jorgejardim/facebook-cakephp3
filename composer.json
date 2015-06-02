@@ -16,7 +16,7 @@
     ],
     "require": {
 	"php": ">=5.4",
-	"cakephp/cakephp": "3.0.x-dev",
+	"cakephp/cakephp": "~3.0",
 	"facebook/php-sdk-v4": "4.0.*"
     },
     "require-dev": {
