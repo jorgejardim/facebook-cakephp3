@@ -10,11 +10,12 @@ A CakePHP 3.x Plugin to allow Facebook Login into an application.
 - PHP 5.4.6+
 - Facebook PHP SDK 4.0+
 - Users Table with at least the following columns
-    * `facebook_id varchar(20)`
+    * `facebook_id varchar(20)` // can be set in config
     * `first_name` // can be set in config
     * `last_name` // can be set in config
     * `username` // can be set in config
     * `password` // can be set in config
+    * `email` // can be set in config
 
 For existing applications that already have a `first_name`, `last_name`, `username` and `password` already created with a different column name, you can dynamically set it in configuration options when loading the `Component` to your `AppController.php` file. See section 2 of Configuration below
 
@@ -86,9 +87,10 @@ public function initialize(){
 	    'app_id' => 'your-fb-app-id',
 	    'app_secret' => 'your-fb-app-secret',
 	    'app_scope' => 'email', // https://developers.facebook.com/docs/facebook-login/permissions/v2.3
-	    'redirect_url' => '', //ie. Router::url(['controller' => 'Users', 'action' => 'login'], TRUE),
+	    'enable_create' => true,
+        'redirect_url' => '', //ie. Router::url(['controller' => 'Users', 'action' => 'login'], TRUE),
 	    'post_login_redirect' => '' //ie. Router::url(['controller' => 'Users', 'action' => 'account'], TRUE)
-	    // 'user_columns' => ['first_name' => 'fname', 'last_name' => 'lname', 'username' => 'uname', 'password' => 'pass'] //not required
+	    // 'user_columns' => ['first_name' => 'fname', 'last_name' => 'lname', 'username' => 'uname', 'password' => 'pass', 'extra_columns' => ['active' => 1]] //not required
     ]);
 }
 ```
