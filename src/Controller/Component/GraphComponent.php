@@ -159,12 +159,17 @@ class GraphComponent extends Component {
 	'redirect_url' => '/users/login',
 	'post_login_redirect' => '/',
 	'enable_graph_helper' => true,
+    'enable_create' => true,
 	'user_model' => 'Users',
 	'user_columns' => [
+        'facebook_id' => 'facebook_id',
 	    'first_name' => 'first_name',
 	    'last_name' => 'last_name',
 	    'password' => 'password',
-	    'username' => 'username'
+	    'username' => 'username',
+        'email' => 'email',
+        'long_name' => false, // or field name
+        'extra_columns' => false // []
 	]
     ];
 
@@ -274,7 +279,7 @@ class GraphComponent extends Component {
 	    /**
 	     * Queries database for existing Facebook Id
 	     */
-	    $queryFacebookId = $this->Users->find('all')->where(['facebook_id' => $this->FacebookId])->first();
+	    $queryFacebookId = $this->Users->find('all')->where([$this->_configs['user_columns']['facebook_id'] => $this->FacebookId])->first();
 
 	    /**
 	     * Authenticates existing user into application
@@ -283,7 +288,7 @@ class GraphComponent extends Component {
 	    {
 
 		$existing_user = $queryFacebookId->toArray();
-		if ($this->Auth->user() && $this->Auth->user('facebook_id') != $existing_user['facebook_id'])
+		if ($this->Auth->user() && $this->Auth->user($this->_configs['user_columns']['facebook_id']) != $existing_user[$this->_configs['user_columns']['facebook_id']])
 		{
 		    $this->Flash->warning("This Facebook account is already connected with another user. You can only have one account with Facebook");
 		    exit;
@@ -299,7 +304,7 @@ class GraphComponent extends Component {
 		/**
 		 * Queries database for existing user based on Email
 		 */
-		$queryFacebookEmail = $this->Users->find('all')->where(['email' => $this->FacebookEmail])->first();
+		$queryFacebookEmail = $this->Users->find('all')->where([$this->_configs['user_columns']['email'] => $this->FacebookEmail])->first();
 
 
 		/**
@@ -307,7 +312,7 @@ class GraphComponent extends Component {
 		 */
 		if ($queryFacebookEmail)
 		{
-		    if ($this->Auth->user() && $this->Auth->user('email') != $queryFacebookEmail['email'])
+		    if ($this->Auth->user() && $this->Auth->user($this->_configs['user_columns']['email']) != $queryFacebookEmail[$this->_configs['user_columns']['email']])
 		    {
 			$this->Flash->warning("This Facebook account is already connected with another user. You can only have one account with Facebook");
 		    }
@@ -326,13 +331,19 @@ class GraphComponent extends Component {
 			$user = $this->Users->get($this->Auth->user('id'));
 			$this->__updateAccount($user);
 		    }
-		    else
+		    elseif ($this->_configs['enable_create'])
 		    {
 			/**
 			 * If FacebookUserId and FacebookUserEmail is not in database, create new account
 			 */
 			$this->__newAccount();
-		    }
+		    } else
+            {
+            /**
+             * If FacebookUserId and FacebookUserEmail is not in database, invalid user
+             */
+            $this->Flash->error("This Facebook account is not registered.");
+            }
 		}
 	    }
 	}
@@ -360,7 +371,7 @@ class GraphComponent extends Component {
      */
     private function __updateAccount($user)
     {
-	$this->Users->patchEntity($user, ['facebook_id' => $this->FacebookId]);
+	$this->Users->patchEntity($user, [$this->_configs['user_columns']['facebook_id'] => $this->FacebookId]);
 	if ($result = $this->Users->save($user))
 	{
 	    $this->__autoLogin($result);
@@ -377,9 +388,15 @@ class GraphComponent extends Component {
 	    $this->_configs['user_columns']['first_name'] => $this->FacebookFirstName,
 	    $this->_configs['user_columns']['last_name'] => $this->FacebookLastName,
 	    $this->_configs['user_columns']['password'] => $this->__randomPassword(),
-	    'facebook_id' => $this->FacebookId,
-	    'email' => $this->FacebookEmail
+	    $this->_configs['user_columns']['facebook_id'] => $this->FacebookId,
+	    $this->_configs['user_columns']['email'] => $this->FacebookEmail
 	];
+    if($this->_configs['user_columns']['long_name']) {
+        $data[$this->_configs['user_columns']['long_name']] = $this->FacebookFirstName.' '.$this->FacebookLastName;
+    }
+    if ($this->_configs['user_columns']['extra_columns']) {
+        $data = array_merge($data, $this->_configs['user_columns']['extra_columns']);
+    }
 
 	$user = $this->Users->newEntity($data);
 
