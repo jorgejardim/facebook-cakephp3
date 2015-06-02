@@ -1,14 +1,18 @@
 {
-    "name": "akkaweb/cakephp-facebook",
+    "name": "jorge/cakephp-facebook",
     "description": "CakePHP 3 Facebook Plugin",
     "type": "cakephp-plugin",
     "keywords": ["cakephp", "cakephp3", "facebook"],
     "license": "MIT",
     "authors": [
-	{
-	    "name": "Andre Santiago",
-	    "email": "admin@akkaweb.com"
-	}
+    {
+        "name": "Andre Santiago",
+        "email": "admin@akkaweb.com"
+    },
+    {
+        "name": "Jorge Jardim",
+        "email": "jorge@jorgejardim.com.br"
+    }
     ],
     "require": {
 	"php": ">=5.4",
