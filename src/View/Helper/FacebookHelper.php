@@ -31,7 +31,7 @@ class FacebookHelper extends Helper {
 
     public function getLoginUrl() {
         $helper = $fb->getRedirectLoginHelper();
-        $permissions = ['email']; // Optional permissions
+        $permissions = ['email'];
         return $helper->getLoginUrl('https://example.com/fb-callback.php', $permissions);
     }
 }
