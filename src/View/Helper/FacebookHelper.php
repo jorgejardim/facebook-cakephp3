@@ -25,7 +25,7 @@ class FacebookHelper extends Helper {
             'app_id' => Configure::read('Facebook.app_id'),
             'app_secret' => Configure::read('Facebook.app_secret'),
             'default_graph_version' => 'v2.4',
-            //'default_access_token' => '{access-token}', // optional
+            //'default_access_token' => '{access-token}',
         ]);
     }
 
