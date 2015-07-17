@@ -17,8 +17,8 @@ class FacebookHelper extends Helper {
 
     public $fb;
 
-    public function __construct(View $view, $config = [])
-    {
+    public function __construct(View $view, $config = []) {
+
         parent::__construct($view, $config);
 
         $this->fb = new Facebook([
